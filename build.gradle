@@ -1,0 +1,123 @@
+import nu.studer.gradle.jooq.JooqEdition
+
+plugins {
+    id 'org.springframework.boot' version '2.6.3'
+    //id 'org.liquibase.gradle' version '2.1.1'
+    id 'nu.studer.jooq' version '7.0'
+    id 'java'
+    id 'idea'
+}
+
+group 'ru.chaykin.microservapp'
+version '1.0'
+
+/*liquibase {
+    activities {
+        dockerDb {
+            if (project.hasProperty("liquibaseContexts")) {
+                contexts liquibaseContexts
+            }
+            changeLogFile "src/main/liquibase/root-changelog.xml"
+            url "jdbc:postgresql://localhost:5432/requestservice"
+            username "postgres"
+            password "postgres"
+        }
+    }
+    //runList = project.ext.runList
+}*/
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+springBoot {
+    mainClass.set("ro.chaykin.microservapp.Application")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+dependencies {
+    //spring
+    implementation 'org.springframework.boot:spring-boot-starter:2.6.3'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.3'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq:2.6.3'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.6.3'
+    implementation 'org.springframework.data:spring-data-commons:2.6.1'
+    //implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.3'
+    implementation 'org.springframework.kafka:spring-kafka:2.8.2'
+    implementation 'org.springframework.kafka:spring-kafka:2.8.2'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.6.3'
+
+    implementation 'ru.chaykin.microservapp:kafka-objects:1.0'
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'io.projectreactor:reactor-core:3.4.14'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1'
+
+    //DB
+    implementation 'org.postgresql:postgresql:42.3.2'
+    //implementation 'org.liquibase:liquibase-core:4.7.1'
+    //liquibaseRuntime 'org.liquibase:liquibase-core:4.7.1'
+    implementation 'org.jooq:jooq:3.16.3'
+    implementation 'org.jooq:jooq-meta:3.16.3'
+    //liquibaseRuntime 'org.postgresql:postgresql:42.3.2'
+    jooqGenerator 'org.postgresql:postgresql:42.3.2'
+
+    implementation 'ch.qos.logback:logback-classic:1.2.10'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.1'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
+    testImplementation 'org.springframework.kafka:spring-kafka-test:2.8.2'
+    //testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+jooq {
+    version = '3.16.3'
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://localhost:5432/requestservice'
+                    user = 'postgres'
+                    password = 'postgres'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'requestservice'
+                    }
+                    generate {
+                        relations = true
+                        deprecated = false
+                        records = true
+                        //generatedAnnotations = true
+                        //fluentSetters = true
+                        pojos = true
+                        validationAnnotations = true
+                    }
+                    target {
+                        packageName = 'ru.chaykin.microservapp.jooq'
+                    }
+                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                }
+            }
+        }
+    }
+}
+
+//generateJooq.dependsOn(liquibase: update)

@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "service.name",
+      "type": "java.lang.String",
+      "description": "Description for service.name."
+    },
+    {
+      "name": "service.version",
+      "type": "java.lang.String",
+      "description": "Description for service.version."
+    }
+  ] }

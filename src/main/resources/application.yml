@@ -1,0 +1,34 @@
+kafka:
+  bootstrapServers: localhost:9092
+  errorTopic: requestservice_error
+  replyOnError: true
+  producers:
+    requestprocessingservice:
+      groupTopic: requestprocessingservice_group
+      specificTopic: requestprocessingservice_specific
+  groupConsumer:
+    concurrency: 1
+    groupId: requestservice
+    pollTimeOut: 3000
+    topic: requestservice_gpoup
+  specificConsumer:
+    concurrency: 1
+    groupId: requestservice
+    pollTimeOut: 3000
+    topic: requestservice_specific
+postgresql:
+  database: requestservice
+  defaultschema: requestservice
+  host: localhost
+  port: 5432
+server:
+  port: 7070
+service:
+  name: requestservice
+  version: 1.0
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${postgresql.host}:${postgresql.port}/${postgresql.database}
+    username: postgres
+    password: postgres
