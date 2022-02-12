@@ -5,13 +5,11 @@ import common.Message;
 import common.simple.SimpleKafkaListener;
 import dto.requestservice.CreateRequestResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.stereotype.Service;
-import ru.chaykin.microservapp.config.KafkaConfig;
 
 import java.util.Map;
 

@@ -32,3 +32,5 @@ spring:
     url: jdbc:postgresql://${postgresql.host}:${postgresql.port}/${postgresql.database}
     username: postgres
     password: postgres
+  liquibase:
+    change-log: root-changelog.xml

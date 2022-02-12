@@ -11,9 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 @Configuration
-public class KafkaConfigConfig {
+public class KafkaPropertiesInitializer {
     @Bean
-    public KafkaConfig kafkaConfig() {
+    public KafkaProperties kafkaConfig() {
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream("src/main/resources/kafka.yml");
@@ -22,7 +22,7 @@ public class KafkaConfigConfig {
         }
         Representer representer = new Representer();
         representer.getPropertyUtils().setSkipMissingProperties(true);
-        Yaml yaml = new Yaml(new Constructor(KafkaConfig.class), representer);
-        return yaml.loadAs(inputStream, KafkaConfig.class);
+        Yaml yaml = new Yaml(new Constructor(KafkaProperties.class), representer);
+        return yaml.loadAs(inputStream, KafkaProperties.class);
     }
 }

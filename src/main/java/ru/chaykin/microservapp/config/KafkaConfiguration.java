@@ -25,11 +25,11 @@ import java.util.Optional;
 @Configuration
 public class KafkaConfiguration {
 
-    private final KafkaConfig kafkaConfig;
+    private final KafkaProperties kafkaProperties;
 
     @Autowired
-    public KafkaConfiguration(KafkaConfig kafkaConfig) {
-        this.kafkaConfig = kafkaConfig;
+    public KafkaConfiguration(KafkaProperties kafkaProperties) {
+        this.kafkaProperties = kafkaProperties;
     }
 
 
@@ -51,11 +51,11 @@ public class KafkaConfiguration {
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kafkaConfig.getBootstrapServers());
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kafkaProperties.getBootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        if (Optional.ofNullable(kafkaConfig.getProperties()).isPresent()) {
-            props.putAll(kafkaConfig.getProperties());
+        if (Optional.ofNullable(kafkaProperties.getProperties()).isPresent()) {
+            props.putAll(kafkaProperties.getProperties());
         }
         return props;
     }
@@ -63,14 +63,14 @@ public class KafkaConfiguration {
     @Bean
     public Map<String, Object> groupConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kafkaConfig.getBootstrapServers());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kafkaProperties.getBootstrapServers());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, this.kafkaConfig.getSpecificConsumer().getGroupId());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, this.kafkaProperties.getSpecificConsumer().getGroupId());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        if (Optional.ofNullable(kafkaConfig.getProperties()).isPresent()) {
-            props.putAll(kafkaConfig.getProperties());
+        if (Optional.ofNullable(kafkaProperties.getProperties()).isPresent()) {
+            props.putAll(kafkaProperties.getProperties());
         }
         return props;
     }
@@ -78,15 +78,15 @@ public class KafkaConfiguration {
     @Bean
     public Map<String, Object> specificConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kafkaConfig.getBootstrapServers());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kafkaProperties.getBootstrapServers());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, this.kafkaConfig.getSpecificConsumer().getGroupId());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, this.kafkaProperties.getSpecificConsumer().getGroupId());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, true);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        if (Optional.ofNullable(kafkaConfig.getProperties()).isPresent()) {
-            props.putAll(kafkaConfig.getProperties());
+        if (Optional.ofNullable(kafkaProperties.getProperties()).isPresent()) {
+            props.putAll(kafkaProperties.getProperties());
         }
         return props;
     }
@@ -95,8 +95,8 @@ public class KafkaConfiguration {
     KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Message>> specificKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Message> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(specificConsumerFactory());
-        factory.setConcurrency(this.kafkaConfig.getSpecificConsumer().getConcurrency());
-        factory.getContainerProperties().setPollTimeout(this.kafkaConfig.getSpecificConsumer().getPollTimeOut());
+        factory.setConcurrency(this.kafkaProperties.getSpecificConsumer().getConcurrency());
+        factory.getContainerProperties().setPollTimeout(this.kafkaProperties.getSpecificConsumer().getPollTimeOut());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setReplyTemplate(kafkaTemplate());
         factory.setRecordInterceptor(new CustomRecordInterceptor<>());
@@ -107,8 +107,8 @@ public class KafkaConfiguration {
     KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Message>> groupKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Message> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(groupConsumerFactory());
-        factory.setConcurrency(this.kafkaConfig.getGroupConsumer().getConcurrency());
-        factory.getContainerProperties().setPollTimeout(this.kafkaConfig.getGroupConsumer().getPollTimeOut());
+        factory.setConcurrency(this.kafkaProperties.getGroupConsumer().getConcurrency());
+        factory.getContainerProperties().setPollTimeout(this.kafkaProperties.getGroupConsumer().getPollTimeOut());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setReplyTemplate(kafkaTemplate());
         factory.setRecordInterceptor(new CustomRecordInterceptor<>());

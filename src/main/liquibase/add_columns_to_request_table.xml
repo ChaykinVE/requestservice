@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog logicalFilePath="add_columns_to_request_table.xml"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet id="add_columns_to_request_table" author="VyacheslavChaykin" context="schema" runAlways="false">
+        <sql>
+            alter table requestservice.requests add column if not exists request_id uuid;
+            alter table requestservice.requests add column if not exists client_num int8;
+        </sql>
+        <rollback>
+            alter table requestservice.requests drop column if exists request_id;
+            alter table requestservice.requests drop column if exists client_num;
+        </rollback>
+        <comment>
+            Добавлены поля request_id и client_num в таблицу запросов(requests)
+        </comment>
+    </changeSet>
+</databaseChangeLog>
